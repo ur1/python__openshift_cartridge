@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 # don't set -e
 # unknown err happens
 
@@ -29,7 +29,7 @@ start () {
     # ! hash python 2>/dev/null not usable
     #
     if [[ "$( _python_version_in_path )" == '' ]] &&
-        [ -x ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/python ] ||
+        [[ -x ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/python ]] ||
         ! hash uwsgi 2>/dev/null; then
 
         _msg " "           ':MSG_NO_TIME:'
