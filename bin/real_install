@@ -47,7 +47,7 @@ if [[ "${force_reinstall}" == "--force-reinstall" ]]; then
     [[ "$python_version" == "$( _get_python_ver_cleaned )" ]] &&
         _msg " - stop cartridge "
 
-    _msg "- delete version $python_version"
+    _msg " - delete version $python_version"
 fi
 
 
@@ -151,7 +151,7 @@ rm -rf "$SRC_DIR"
 
 # use function from SDK
 # Compare two versions
-http://stackoverflow.com/questions/11887762/how-to-compare-version-style-strings
+# http://stackoverflow.com/questions/11887762/how-to-compare-version-style-strings
 
 is_python3=`/usr/bin/python2.6 <<END
 from distutils.version import LooseVersion, StrictVersion

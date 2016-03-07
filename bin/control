@@ -32,6 +32,8 @@ start () {
         [[ -x ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/python ]] ||
         ! hash uwsgi 2>/dev/null; then
 
+        _msg "${global_pref} cart not started properly"
+        _msg "Check logs"
         _msg " "           ':MSG_NO_TIME:'
         _msg "## Manual input instructions #############################################"               ':MSG_NO_TIME:'
         _msg "rhc ssh --app $OPENSHIFT_APP_NAME '\$python_real_install 1.2.3 --force-install'"          ':MSG_NO_TIME:'
@@ -42,7 +44,7 @@ start () {
 
         _msg "$p end"
 
-        exit 0;
+        exit 1
     fi
 
 
@@ -54,7 +56,7 @@ start () {
     else
         _render_conf
 
-        uwsgi "${OSC__PYTHON_UWSGI_INI}"  >>$python_log_actions 2>&1
+        _msg "uwsgi at start say >|$( uwsgi "${OSC__PYTHON_UWSGI_INI}" 2>&1 )|<"
 
         wait_for_pid_file ${pid} &&
             _msg "[OK] start"  ':MSG_NO_TIME:'
