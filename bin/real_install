@@ -191,15 +191,6 @@ else
     if [[ "$is_python2" == 'True' ]] &&
         [ -x "${version_local_dir}bin/python2" ]; then
 
-    #
-    # python 2.7.9 after compiling not create link to python2 with name python
-    #
-        _msg "$p creating symbolic link to python2"
-
-            ln -s ${version_local_dir}bin/python2 ${version_local_dir}bin/python &&
-            _msg "[OK]" || _msg "[FAILED]"
-
-
         _msg "$p install pip for python 2"
         cd ${version_local_dir}bin/
 
