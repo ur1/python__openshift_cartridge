@@ -1,0 +1,146 @@
+#!/bin/bash
+
+# https://docs.openshift.org/origin-m4/oo_cartridge_developers_guide.html#bin-control
+# control <action>
+# The control script allows OpenShift or user to control the state of the cartridge.
+
+source ${OPENSHIFT_PYTHON_DIR}bin/_common
+
+
+# for _msg function in _common file
+# this use for change formatting messages if this scripts run by rhc or openshift
+# 1 = show with prefixes for rhc
+export non_direct_request=1
+
+
+local_pref="${global_pref}|control|"
+
+
+start () {
+    local p
+    p="${local_pref}start_uwsgi|"
+    _msg "$p begin"
+
+    _python_display_versions
+
+    # system python 2.6.6 always in PATH
+    # ! hash python 2>/dev/null not usable
+    #
+    if [[ "$( _python_version_in_path )" == '' ]] &&
+        [[ -x ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/python ]] ||
+        ! hash uwsgi 2>/dev/null; then
+
+        _msg " "           ':MSG_NO_TIME:'
+        _msg "## Manual input instructions #############################################"               ':MSG_NO_TIME:'
+        _msg "rhc ssh --app $OPENSHIFT_APP_NAME '\$python_real_install 1.2.3 --force-install'"          ':MSG_NO_TIME:'
+        _msg "More info in interactive log"                                                             ':MSG_NO_TIME:'
+        _msg "rhc tail -f ${python_log_actions#$OPENSHIFT_HOMEDIR} --app $OPENSHIFT_APP_NAME"           ':MSG_NO_TIME:'
+        _msg "## Manual input instructions #############################################"               ':MSG_NO_TIME:'
+        _msg " "           ':MSG_NO_TIME:'
+
+        _msg "$p end"
+
+        exit 0;
+    fi
+
+
+    local pid
+    pid=${OSC__PYTHON_UWSGI_PID}
+
+    if pgrep "uwsgi" >/dev/null && [ -f "${pid}" ]; then
+        _msg "$p [OK] already running"
+    else
+        _render_conf
+
+        uwsgi "${OSC__PYTHON_UWSGI_INI}"
+
+        wait_for_pid_file ${pid} &&
+            _msg "[OK]"
+    fi
+
+    _msg "$p pid=$( cat ${pid} )"
+
+    _msg "$p end"
+}
+
+
+
+stop () {
+    local p
+    p="${local_pref}stop|"
+
+    local pid
+    pid=${OSC__PYTHON_UWSGI_PID}
+
+    _msg "$p begin"
+
+    if pgrep "uwsgi" >/dev/null && [ -f "${pid}" ]; then
+        #http://uwsgi-docs.readthedocs.org/en/latest/Management.html#stopping-the-server
+        kill -QUIT $( cat ${pid} )
+        wait_for_stop $( cat ${pid} ) &&
+            _msg "[OK] started"  ':MSG_NO_TIME:'
+    else
+        _msg "$p pid file not exists"
+    fi
+
+    rm -rf ${pid} &&
+        _msg "clean pidfile"
+
+    _msg "$p end"
+}
+
+
+
+reload () {
+    local p
+    p="${local_pref}reload|"
+
+    local pid
+    pid="${OSC__PYTHON_UWSGI_INI}"
+
+    _msg "$p begin"
+
+    if pgrep "uwsgi" >/dev/null && [ -f "${pid}" ]; then
+        # http://uwsgi-docs.readthedocs.org/en/latest/Management.html#reloading-the-server
+        kill -SIGHUP $( cat ${pid} )
+
+    else
+        _msg "$p Cannot reload uwsgi - not running. Just start"
+        start
+    fi
+
+    _msg "$p end"
+}
+
+
+
+status () {
+    pgrep uwsgi >/dev/null
+    return $?
+}
+
+
+
+tidy () {
+    local p
+    p="${local_pref}tidy|"
+    _msg "$p begin"
+
+    rm -f ${OSC__PYTHON_LOG_PREFIX}*
+
+    _msg "$p end"
+}
+
+
+_msg "${global_pref} DO >$1<"
+
+
+case "$1" in
+  start)     exit 0 ;;
+  stop)      stop ;;
+  restart)   stop; start ;;
+  reload)    reload ;;
+  status)    exit 0 ;;
+  tidy)      tidy ;;
+  *)         exit 0
+esac

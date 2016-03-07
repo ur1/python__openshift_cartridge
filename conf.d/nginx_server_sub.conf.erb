@@ -1,0 +1,14 @@
+server {
+    listen  <%= ENV['OPENSHIFT_NGINX_IP'] %>:<%= ENV['OPENSHIFT_NGINX_PORT'] %>;
+    server_name _;
+
+
+    location / {
+        uwsgi_pass  unix:<%= ENV['OSC__PYTHON_UWSGI_SOCK'] %>;
+    }
+
+    location /static {
+        root <%= ENV['OPENSHIFT_DATA_DIR'] %>static;
+    }
+}
+

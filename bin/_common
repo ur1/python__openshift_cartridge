@@ -1,0 +1,167 @@
+#!/bin/bash
+
+# file for common functions and vars
+# not openshift file
+# included in bin/* and .bash_profile
+
+
+# https://github.com/openshift/origin-server/blob/master/node/misc/usr/lib/cartridge_sdk/bash/sdk
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+
+# not delete
+# env variable not do thing right!
+global_pref="Python"
+
+
+python_log_actions=${OSC__PYTHON_LOG_PREFIX}actions.log
+
+
+_pip () {
+    if hash pip 2>/dev/null; then
+        pip \
+            --no-cache-dir --disable-pip-version-check $@
+    else
+        _msg "pip not installed or not in PATH"
+        _msg "ls ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/"
+        _msg "$(ls ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/ )"   ':MSG_NO_TIME:'
+
+        exit 1
+    fi
+}
+# this will work only when rhc ssh to openshift
+# not in scripts
+alias pip=_pip
+
+
+pip_update () {
+    pip freeze --local |
+    grep -v '^\-e' |
+    cut -d = -f 1 |
+    xargs pip install -U
+}
+
+
+
+_msg() {
+    local txt
+    local type
+    local Y
+    local R
+
+    Y=$( echo -e '\e[0;33m' )
+    R=$( echo -e '\e[0m' )
+
+    txt="${Y}$1${R}"
+    type=$2
+
+
+
+    if [[ "${non_direct_request}" == '1' ]]; then
+
+        case ${type} in
+            ':RESULT:')         client_result   "$txt";;
+            ':MSG_NO_TIME:')    client_message  "$txt";;
+            ':MSG:')            client_message  "[$( date +'%H:%M:%S_%3N' )]$txt";;
+            *)                  client_message  "[$( date +'%H:%M:%S_%3N' )]$txt";;
+        esac
+
+    else
+        # use in case 'rhc ssh'
+        case ${type} in
+            ':RESULT:')         echo "$txt";;
+            ':MSG_NO_TIME:')    echo "$txt";;
+            ':MSG:')            echo "[$( date +'%H:%M:%S_%3N' )]$txt";;
+            *)                  echo "[$( date +'%H:%M:%S_%3N' )]$txt";;
+        esac
+
+    fi
+
+    echo "[`date +'%Y:%m:%d__%H:%M:%S'`]$txt" >> $python_log_actions
+}
+
+
+
+_get_python_ver_cleaned () {
+    local _ver_raw
+    if hash python 2>/dev/null; then
+        _ver_raw=$( python -V 2>&1 )
+        echo "${_ver_raw#Python }"
+    else
+        echo "~0"
+    fi
+}
+
+
+
+_get_pip_version_verbose () {
+    if hash pip 2>/dev/null; then
+        echo $( pip --version 2>/dev/null | sed "s|$OPENSHIFT_HOMEDIR|~/|g" )
+    else
+        echo "~0"
+    fi
+}
+
+
+
+_get_uwsgi_version_verbose () {
+    if hash uwsgi 2>/dev/null; then
+        echo $( uwsgi --version 2>/dev/null )
+    else
+        echo "~0"
+    fi
+}
+
+
+_get_pip_version_cleaned () {
+    if hash pip 2>/dev/null; then
+        echo $( pip --version 2>/dev/null | cut -d" " -f2 )
+    else
+        echo "~0"
+    fi
+}
+
+
+
+_python_version_in_path () {
+    echo $( echo $PATH| grep -oe 'python/versions/\([0-9.]*\)' | awk -F'python/versions/' '{print $2}' )
+}
+
+
+
+# don't delete
+# this code not share between carts
+_render_conf () {
+    local p
+    p="${local_pref}_render_conf|"
+    _msg "$p begin"
+
+    for f in $( ls ${OPENSHIFT_REPO_DIR}conf.d/*.erb 2>/dev/null ) ; do
+
+        _msg "$p render config conf.d/$( basename $f )"
+        oo-erb "$f" > "${f%.erb}"
+
+    done
+
+    _msg "$p end"
+}
+
+
+_python_display_versions () {
+    _msg " "            ':MSG_NO_TIME:'
+    _msg "## Software versions ##############################"              ':MSG_NO_TIME:'
+    _msg "python -v=$( _get_python_ver_cleaned )"                           ':MSG_NO_TIME:'
+    _msg "version in PATH =$( _python_version_in_path )"                    ':MSG_NO_TIME:'
+    _msg "versions list >| $( ls -1 ${OPENSHIFT_PYTHON_DIR}versions | tr '\n' ' ' )|<"   ':MSG_NO_TIME:'
+    _msg "uwsgi -v=$( _get_uwsgi_version_verbose )"                         ':MSG_NO_TIME:'
+    _msg "pip -v=$( _get_pip_version_verbose )"                             ':MSG_NO_TIME:'
+    _msg "## Software versions ##############################"              ':MSG_NO_TIME:'
+    _msg " "            ':MSG_NO_TIME:'
+}
+
+# when hit in bash/ssh '${cart_name}_display_versions'
+# this will touch env variable in env/{cart_name}_display_versions.erb
+# which run ./_common {cart_name}_display_versions
+#
+# that's because ssh hardcoded to non interactive mode and I can't use aliases for that
+[[ "$1" == 'python_display_versions' ]] && _python_display_versions

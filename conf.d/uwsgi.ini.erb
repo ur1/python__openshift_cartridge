@@ -1,0 +1,62 @@
+[uwsgi]
+# plugins = python or 3.5
+# have to build or apt-get install uwsgi-plugin-python3
+# http://projects.unbit.it/uwsgi/wiki/Guide4Packagers
+
+
+#socket=IP:PORT
+socket=<%= ENV['OSC__PYTHON_UWSGI_SOCK'] %>
+chmod-socket = 600
+
+pidfile=<%= ENV['OSC__PYTHON_UWSGI_PID'] %>
+touch-reload=<%= ENV['OSC__PYTHON_UWSGI_INI'] %>
+
+#chdir = /home/foobar/myproject/
+chdir=<%= ENV['OPENSHIFT_PYTHON_DIR'] %>conf.d/
+
+#wsgi-file = myproject/wsgi.py
+wsgi-file = <%= ENV['OPENSHIFT_PYTHON_DIR'] %>conf.d/wsgi.py
+processes = 4
+threads = 4
+
+# stats = 127.0.0.1:9191
+# stats = /tmp/stats.sock
+# nginx proxy stats over tcp or socket
+# need to add location in nginx
+# add location in nginx
+#stats = <%= ENV['OPENSHIFT_NGINX_IP'] %>:9999
+# or pip install uwsgitop
+
+# not tested
+# venv should be in PATH
+# if not
+# add env var for this
+#virtualenv=virtualenv
+
+master=True
+vacuum=True
+max-requests=5000
+harakiri=60
+
+# WARNING: you have enabled harakiri without post buffering.
+# Slow upload could be rejected on post-unbuffered webservers
+
+# values just copypasted from another config
+# todo: tune post buffers size
+post-buffering = 8192           # 8k
+post-buffering-bufsize = 65536  # 64k
+# limit-post = 10485760         # 10M
+
+
+# Log section
+daemonize=<%= ENV['OSC__PYTHON_LOG_PREFIX'] %>uwsgi.log
+# only errors will log
+disable-logging=true
+
+# just in case
+log-format = %(addr) - %(user) [%(ltime)] "%(method) %(uri) %(proto)" %(status) %(size) "%(referer)" "%(uagent)"
+
+
+memory-report=true
+
+

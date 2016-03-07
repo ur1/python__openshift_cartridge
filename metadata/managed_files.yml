@@ -1,0 +1,5 @@
+processed_templates:
+- 'env/*.erb'
+
+locked_files:
+- bin/
