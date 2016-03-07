@@ -43,7 +43,7 @@ fi
 
 
 if [[ "${force_reinstall}" == "--force-reinstall" ]]; then
-    _msg "$p before 'make install' - will delete version $python_version"
+    _msg "$p before 'make install'"
     [[ "$python_version" == "$( _get_python_ver_cleaned )" ]] &&
         _msg " - stop cartridge "
 
@@ -254,7 +254,7 @@ _msg "$p end"
 _python_display_versions
 
 _msg " "   ':MSG_NO_TIME:'
-_msg "$p don't forget restart app - this will _actually_ change version "           ':MSG_NO_TIME:'
+_msg "Don't forget restart app - this will _actually_ change version "           ':MSG_NO_TIME:'
 _msg "## Manual input instructions #############################################"   ':MSG_NO_TIME:'
 _msg "rhc app-restart --app $OPENSHIFT_APP_NAME"                                    ':MSG_NO_TIME:'
 _msg "## Manual input instructions #############################################"   ':MSG_NO_TIME:'

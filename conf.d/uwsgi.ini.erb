@@ -9,7 +9,8 @@ socket=<%= ENV['OSC__PYTHON_UWSGI_SOCK'] %>
 chmod-socket = 600
 
 pidfile=<%= ENV['OSC__PYTHON_UWSGI_PID'] %>
-touch-reload=<%= ENV['OSC__PYTHON_UWSGI_INI'] %>
+# touch reload cause problem - it happens when nginx rerender configs
+# touch-reload=<%= ENV['OSC__PYTHON_UWSGI_INI'] %>
 
 #chdir = /home/foobar/myproject/
 chdir=<%= ENV['OPENSHIFT_PYTHON_DIR'] %>conf.d/
@@ -27,11 +28,13 @@ threads = 4
 #stats = <%= ENV['OPENSHIFT_NGINX_IP'] %>:9999
 # or pip install uwsgitop
 
+
 # not tested
 # venv should be in PATH
 # if not
 # add env var for this
 #virtualenv=virtualenv
+
 
 master=True
 vacuum=True
