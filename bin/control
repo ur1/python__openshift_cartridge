@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+# don't set -e
+# unknown err happens
 
 # https://docs.openshift.org/origin-m4/oo_cartridge_developers_guide.html#bin-control
 # control <action>
@@ -55,7 +57,7 @@ start () {
         uwsgi "${OSC__PYTHON_UWSGI_INI}"
 
         wait_for_pid_file ${pid} &&
-            _msg "[OK]"
+            _msg "[OK] start"  ':MSG_NO_TIME:'
     fi
 
     _msg "$p pid=$( cat ${pid} )"
@@ -78,7 +80,7 @@ stop () {
         #http://uwsgi-docs.readthedocs.org/en/latest/Management.html#stopping-the-server
         kill -QUIT $( cat ${pid} )
         wait_for_stop $( cat ${pid} ) &&
-            _msg "[OK] started"  ':MSG_NO_TIME:'
+            _msg "[OK] stopped"  ':MSG_NO_TIME:'
     else
         _msg "$p pid file not exists"
     fi

@@ -3,7 +3,7 @@
 # this file provide compile python and install uwsgi
 
 # don't do set -e
-# make install cant write to home dir
+# make install can't write to home dir
 
 source ${OPENSHIFT_PYTHON_DIR}bin/_common
 
