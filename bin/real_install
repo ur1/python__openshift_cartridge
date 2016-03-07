@@ -197,7 +197,7 @@ else
         curl -sOL https://bootstrap.pypa.io/get-pip.py >>$python_log_actions 2>&1
 
         ${version_local_dir}bin/python get-pip.py >>$python_log_actions 2>&1 &&
-            _msg "[OK]" &&
+            _msg "[OK] pip ready" &&
             rm -rf get-pip.py
     else
         _msg "$p python2 nor python3 files not exists"
