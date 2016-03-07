@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # file for common functions and vars
 # not openshift file
@@ -124,7 +124,14 @@ _get_pip_version_cleaned () {
 
 
 _python_version_in_path () {
-    echo $( echo $PATH| grep -oe 'python/versions/\([0-9.]*\)' | awk -F'python/versions/' '{print $2}' )
+    local v
+    v=$( echo $PATH| grep -oe 'python/versions/\([0-9.]*\)' | awk -F'python/versions/' '{print $2}' )
+
+    if [[ $v != '' ]]; then
+        echo "$v"
+    else
+        echo "~0"
+    fi
 }
 
 
