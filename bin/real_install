@@ -238,16 +238,16 @@ __pip () {
 }
 
 _msg "$p uwsgi install begin"
-__pip install uwsgi >>$python_log_actions 2>&1
+_msg "$( __pip install uwsgi 2>&1 )"
 
 _msg "$p uwsgitop install begin"
-__pip install uwsgitop >>$python_log_actions 2>&1
+_msg "$( __pip install uwsgitop 2>&1 )"
 
 # do this in end
 # and not in file where make python
 # if "set -e" this action can fail all
 _msg "$p upgrade pip "
-__pip install --upgrade pip >>$python_log_actions 2>&1
+_msg "$( __pip install --upgrade pip 2>&1 )"
 
 
 _msg "$p end"
