@@ -11,7 +11,7 @@ python_version=$1
 force_reinstall=$2
 
 
-p="${global_pref}|real_install|python"
+p="${global_pref}|real_install|"
 _msg "$p begin ${python_version}"
 
 version_dir="${OPENSHIFT_PYTHON_DIR}versions/${python_version}/"
@@ -218,7 +218,7 @@ set_env_var \
 _msg "$p end "
 
 
-p="${global_pref}|_install_uwsgi|"
+p="${global_pref}real_install|"
 
 _msg "$p begin"
 
