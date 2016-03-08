@@ -13,8 +13,9 @@ source $OPENSHIFT_CARTRIDGE_SDK_BASH
 # env variable not do thing right!
 global_pref="Python"
 
-
-python_log_actions=${OSC__PYTHON_LOG_PREFIX}actions.log
+# put all cart logs to one file
+#python_log_actions=${OSC__PYTHON_LOG_PREFIX}actions.log
+python_log_actions=${OPENSHIFT_LOG_DIR}cart__actions.log
 
 
 _pip () {
