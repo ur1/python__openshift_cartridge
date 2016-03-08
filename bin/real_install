@@ -221,42 +221,42 @@ p="${global_pref}|_install_uwsgi|"
 
 _msg "$p begin"
 
-_PATH=$PATH
-
-export PATH=${version_local_dir}bin/
-
-cd ${version_local_dir}bin/
-
-__pip () {
-    local p
-    pip
-
-    if [ -x pip ]; then
-        pip --no-cache-dir --disable-pip-version-check $@
-    else
-        _msg "pip not installed"
-        _msg ">|$( ls )|<"
-        exit 1
-    fi
-}
+#_PATH=$PATH
+#
+#export PATH=${version_local_dir}bin/
+#
+#cd ${version_local_dir}bin/
+#
+#__pip () {
+#    local p
+#    pip
+#
+#    if [ -x pip ]; then
+#        pip --no-cache-dir --disable-pip-version-check $@
+#    else
+#        _msg "pip not installed"
+#        _msg ">|$( ls )|<"
+#        exit 1
+#    fi
+#}
 
 _msg "$p uwsgi install begin"
-_msg "$( __pip install uwsgi 2>&1 )"
+_msg "$( export PATH=${version_local_dir}bin/; pip --no-cache-dir --disable-pip-version-check install uwsgi 2>&1 )"
 
 _msg "$p uwsgitop install begin"
-_msg "$( __pip install uwsgitop 2>&1 )"
+_msg "$( export PATH=${version_local_dir}bin/; pip --no-cache-dir --disable-pip-version-check install uwsgitop 2>&1 )"
 
 # do this in end
 # and not in file where make python
 # if "set -e" this action can fail all
 _msg "$p upgrade pip "
-_msg "$( __pip install --upgrade pip 2>&1 )"
+_msg "$( export PATH=${version_local_dir}bin/; pip --no-cache-dir --disable-pip-version-check install --upgrade pip 2>&1 )"
 
 
 _msg "$p end"
 
 
-export PATH=${_PATH}
+#export PATH=${_PATH}
 
 
 _python_display_versions
