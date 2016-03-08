@@ -241,6 +241,8 @@ _msg "$p begin"
 #    fi
 #}
 
+cd __pip=${version_local_dir}bin/
+
 py=${version_local_dir}bin/python
 __pip=${version_local_dir}bin/pip
 
