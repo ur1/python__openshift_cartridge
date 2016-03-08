@@ -23,7 +23,7 @@ _pip () {
         pip \
             --no-cache-dir --disable-pip-version-check $@
     else
-        if [[ "$( _python_version_in_path )" ~= '~0' ]];then
+        if [[ "$( _python_version_in_path )" != '~0' ]];then
             _msg "pip not installed or not in PATH"
             _msg "ls ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/"
             _msg "$(ls ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/ )"   ':MSG_NO_TIME:'
