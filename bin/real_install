@@ -207,6 +207,8 @@ else
 
 fi
 
+exit 0
+
 _msg "$p set PATH in env"
 set_env_var \
     OPENSHIFT_PYTHON_PATH_ELEMENT \
@@ -239,6 +241,7 @@ _msg "$p begin"
 #        exit 1
 #    fi
 #}
+
 py=${version_local_dir}bin/python
 pip=${version_local_dir}bin/pip
 
