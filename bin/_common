@@ -23,23 +23,29 @@ _pip () {
         pip \
             --no-cache-dir --disable-pip-version-check $@
     else
-        _msg "pip not installed or not in PATH"
-        _msg "ls ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/"
-        _msg "$(ls ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/ )"   ':MSG_NO_TIME:'
+        if [[ "$( _python_version_in_path )" ~= '~0' ]];then
+            _msg "pip not installed or not in PATH"
+            _msg "ls ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/"
+            _msg "$(ls ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/ )"   ':MSG_NO_TIME:'
 
-        exit 1
+            exit 1
+        else
+            _msg "python has not any version in PATH"
+
+            exit 1
+        fi
     fi
 }
 # this will work only when rhc ssh to openshift
 # not in scripts
-alias pip=_pip
+#alias pip=_pip
 
 
 pip_update () {
-    pip freeze --local |
+    _pip freeze --local |
     grep -v '^\-e' |
     cut -d = -f 1 |
-    xargs pip install -U
+    xargs _pip install -U
 }
 
 

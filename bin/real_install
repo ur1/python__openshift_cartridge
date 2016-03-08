@@ -207,7 +207,6 @@ else
 
 fi
 
-exit 0
 
 _msg "$p set PATH in env"
 set_env_var \
@@ -243,19 +242,20 @@ _msg "$p begin"
 #}
 
 py=${version_local_dir}bin/python
-pip=${version_local_dir}bin/pip
+__pip=${version_local_dir}bin/pip
 
+_msg ">$__pip<"
 _msg "$p uwsgi install begin"
-_msg "$( $py $pip --no-cache-dir --disable-pip-version-check install uwsgi 2>&1 )"
+_msg "$( $__pip --no-cache-dir --disable-pip-version-check install uwsgi 2>&1 )"
 
 _msg "$p uwsgitop install begin"
-_msg "$( $py $pip --no-cache-dir --disable-pip-version-check install uwsgitop 2>&1 )"
+_msg "$( $__pip --no-cache-dir --disable-pip-version-check install uwsgitop 2>&1 )"
 
 # do this in end
 # and not in file where make python
 # if "set -e" this action can fail all
 _msg "$p upgrade pip "
-_msg "$( $py $pip --no-cache-dir --disable-pip-version-check install --upgrade pip 2>&1 )"
+_msg "$( $__pip --no-cache-dir --disable-pip-version-check install --upgrade pip 2>&1 )"
 
 
 _msg "$p end"
