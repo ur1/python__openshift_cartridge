@@ -228,7 +228,7 @@ _msg "$p begin"
 #
 #cd ${version_local_dir}bin/
 #
-#__pip () {
+#PIP () {
 #    local p
 #    pip
 #
@@ -241,23 +241,23 @@ _msg "$p begin"
 #    fi
 #}
 
+
 cd ${version_local_dir}bin/
 
-py=${version_local_dir}bin/python
-__pip=${version_local_dir}bin/pip
+PIP=${version_local_dir}bin/pip
 
-_msg ">$__pip<"
+_msg ">$PIP<"
 _msg "$p uwsgi install begin"
-_msg "$( $__pip --no-cache-dir --disable-pip-version-check install uwsgi 2>&1 )"
+_msg "$( $PIP --no-cache-dir --disable-pip-version-check install uwsgi 2>&1 )"
 
 _msg "$p uwsgitop install begin"
-_msg "$( $__pip --no-cache-dir --disable-pip-version-check install uwsgitop 2>&1 )"
+_msg "$( $PIP --no-cache-dir --disable-pip-version-check install uwsgitop 2>&1 )"
 
 # do this in end
 # and not in file where make python
 # if "set -e" this action can fail all
 _msg "$p upgrade pip "
-_msg "$( $__pip --no-cache-dir --disable-pip-version-check install --upgrade pip 2>&1 )"
+_msg "$( $PIP --no-cache-dir --disable-pip-version-check install --upgrade pip 2>&1 )"
 
 
 _msg "$p end"
