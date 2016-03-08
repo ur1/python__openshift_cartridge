@@ -53,14 +53,14 @@ start () {
     pid=${OSC__PYTHON_UWSGI_PID}
 
     if pgrep "uwsgi" >/dev/null && [ -f "${pid}" ]; then
-        _msg "$p [OK] already running"
+        _msg "$p [OK] already running" ':RESULT:'
     else
         _render_conf
 
         _msg "uwsgi at start say >|$( uwsgi "${OSC__PYTHON_UWSGI_INI}" 2>&1 )|<"
 
         wait_for_pid_file ${pid} &&
-            _msg "[OK] start"  ':MSG_NO_TIME:'
+            _msg "$p [OK] start"  ':RESULT:'
     fi
 
     _msg "$p pid=$( cat ${pid} )"
@@ -83,7 +83,7 @@ stop () {
         #http://uwsgi-docs.readthedocs.org/en/latest/Management.html#stopping-the-server
         kill -QUIT $( cat ${pid} )
         wait_for_stop $( cat ${pid} ) &&
-            _msg "[OK] stopped"  ':MSG_NO_TIME:'
+            _msg "$p [OK] stopped"  ':RESULT:'
     else
         _msg "$p pid file not exists"
     fi
