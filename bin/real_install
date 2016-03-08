@@ -221,6 +221,9 @@ p="${global_pref}|_install_uwsgi|"
 
 _msg "$p begin"
 
+_PATH=$PATH
+
+export PATH=${version_local_dir}bin/
 
 cd ${version_local_dir}bin/
 
@@ -251,6 +254,9 @@ _msg "$( __pip install --upgrade pip 2>&1 )"
 
 
 _msg "$p end"
+
+
+export PATH=${_PATH}
 
 
 _python_display_versions
