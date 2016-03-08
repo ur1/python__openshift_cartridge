@@ -222,16 +222,18 @@ p="${global_pref}|_install_uwsgi|"
 _msg "$p begin"
 
 
+cd ${version_local_dir}bin/
 
 __pip () {
     local p
-    p=${version_local_dir}bin/pip
+    pip
 
-    if [ ! -x $p ];then
-        _msg "pip not installed"
-        exit 1
+    if [ -x pip ]; then
+        pip --no-cache-dir --disable-pip-version-check $@
     else
-        $p --no-cache-dir --disable-pip-version-check $@
+        _msg "pip not installed"
+        _msg ">|$( ls )|<"
+        exit 1
     fi
 }
 

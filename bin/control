@@ -32,7 +32,8 @@ start () {
         [[ -x ${OPENSHIFT_PYTHON_DIR}versions/$( _python_version_in_path )/usr/local/bin/python ]] ||
         ! hash uwsgi 2>/dev/null; then
 
-        _msg "${global_pref} cart not started properly"
+        _msg "${global_pref} cart can not started properly"
+        _msg "Problem occurred during installation"
         _msg "Check logs"
         _msg " "           ':MSG_NO_TIME:'
         _msg "## Manual input instructions #############################################"               ':MSG_NO_TIME:'

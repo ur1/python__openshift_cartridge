@@ -45,6 +45,7 @@ cp -f "${OPENSHIFT_PYTHON_DIR}conf.d/uwsgi.ini.erb" \
 # install executed by openshift with params --version 1.2.3 from manifest.yml
 _python_display_versions $2
 
+find $OPENSHIFT_PYTHON_DIR -iname '.gitkeep' -delete
 
 _msg "$p end wo real install"
 
